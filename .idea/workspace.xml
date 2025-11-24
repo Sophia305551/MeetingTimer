@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f634bb7b-584c-496c-ac36-e48bad9b81d5" name="更改" comment="feat: add sub-task with name &amp; duration (basic-1)">
-      <change afterPath="$PROJECT_DIR$/countdown_timer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirments" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/voice_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="f634bb7b-584c-496c-ac36-e48bad9b81d5" name="更改" comment="feat: voice reminder at task end (personal extension)" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -122,7 +116,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763985693871</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="feat: voice reminder at task end (personal extension)">
+      <option name="closed" value="true" />
+      <created>1763988633844</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763988633844</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -150,6 +152,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: add sub-task with name &amp; duration (basic-1)" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add sub-task with name &amp; duration (basic-1)" />
+    <MESSAGE value="feat: voice reminder at task end (personal extension)" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: voice reminder at task end (personal extension)" />
   </component>
 </project>
