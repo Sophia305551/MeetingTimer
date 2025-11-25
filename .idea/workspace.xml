@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f634bb7b-584c-496c-ac36-e48bad9b81d5" name="更改" comment="feat: voice reminder at task end (personal extension)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirments" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
