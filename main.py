@@ -3,6 +3,9 @@ from tkinter import ttk, messagebox
 from task_list import TaskList
 from add_task_dialog import AddTaskDialog
 from task import Task
+#新增2.CSV功能
+from tkinter import filedialog
+import csv
 
 
 class MainApp:
@@ -24,7 +27,9 @@ class MainApp:
         ttk.Button(btn_frame, text="🗑️ 删除选中", command=self._delete_selected).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="🗑️ 清空所有", command=self._clear_all).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="📊 统计信息", command=self._show_stats).pack(side="left", padx=5)
-
+# 新增2.CSV导入/导出按钮
+        ttk.Button(btn_frame, text="📥 导入CSV", command=self._import_csv).pack(side="left", padx=5)
+        ttk.Button(btn_frame, text="📤 导出CSV", command=self._export_csv).pack(side="left", padx=5)
         # 统计信息显示
         self.stats_frame = ttk.LabelFrame(root_window, text="会议统计", padding=10)
         self.stats_frame.pack(fill="x", padx=20, pady=5)
@@ -187,7 +192,104 @@ class MainApp:
         btn_frame.grid(row=2, column=0, columnspan=2, pady=15)
         ttk.Button(btn_frame, text="保存", command=save_changes).pack(side="left", padx=10)
         ttk.Button(btn_frame, text="取消", command=dialog.destroy).pack(side="left")
+    #新增2.CSV导入导出方法
+    def _import_csv(self):
+              
+        file_path = filedialog.askopenfilename(
+            title="选择要导入的CSV文件",
+            filetypes=[("CSV 文件", "*.csv"), ("所有文件", "*.*")],
+            defaultextension=".csv"
+        )
 
+        if not file_path:
+            return # 用户取消了选择
+
+        try:
+            with open(file_path, mode='r', encoding='utf-8-sig', newline='') as file:
+                reader = csv.DictReader(file)
+
+                # 验证CSV文件是否包含必要的列
+                required_columns = ['任务名称', '时长(分钟)']
+                if not all(col in reader.fieldnames for col in required_columns):
+                    messagebox.showerror("格式错误", f"CSV文件缺少必要的列！\n需要: {', '.join(required_columns)}", parent=self.root)
+                    return
+
+                imported_tasks = []
+                line_number = 2 # 从第二行开始计算（跳过表头）
+                for row in reader:
+                    task_name = row['任务名称'].strip()
+                    duration_str = row['时长(分钟)'].strip()
+
+                    # 数据验证
+                    if not task_name:
+                        messagebox.showwarning("数据警告", f"第 {line_number} 行：任务名称为空，已跳过。", parent=self.root)
+                        line_number += 1
+                        continue
+                    try:
+                        duration = int(duration_str)
+                        if duration <= 0:
+                            raise ValueError
+                    except ValueError:
+                        messagebox.showwarning("数据警告", f"第 {line_number} 行：时长 '{duration_str}' 不是有效的正整数，已跳过。", parent=self.root)
+                        line_number += 1
+                        continue
+
+                    imported_tasks.append(Task(task_name, duration))
+                    line_number += 1
+
+                if not imported_tasks:
+                    messagebox.showinfo("提示", "CSV文件中没有找到有效可导入的任务。", parent=self.root)
+                    return
+
+                # 询问用户是否清空现有任务
+                if self.task_list.get_all():
+                    if messagebox.askyesno("确认导入", f"即将导入 {len(imported_tasks)} 个任务。\n是否清空当前所有任务？", parent=self.root):
+                        self.task_list.clear()
+                
+                # 添加导入的任务
+                for task in imported_tasks:
+                    self.task_list.add(task)
+                
+                self._refresh_treeview()
+                self._update_stats()
+                messagebox.showinfo("成功", f"成功导入 {len(imported_tasks)} 个任务！", parent=self.root)
+
+        except FileNotFoundError:
+            messagebox.showerror("错误", f"文件未找到: {file_path}", parent=self.root)
+        except Exception as e:
+            messagebox.showerror("导入失败", f"发生未知错误: {e}", parent=self.root)
+
+#将当前所有任务导出到CSV文件
+    def _export_csv(self):
+    
+        tasks = self.task_list.get_all()
+        if not tasks:
+            messagebox.showwarning("提示", "当前没有任务可以导出。", parent=self.root)
+            return
+
+        file_path = filedialog.asksaveasfilename(
+            title="保存任务到CSV文件",
+            filetypes=[("CSV 文件", "*.csv"), ("所有文件", "*.*")],
+            defaultextension=".csv",
+            initialfile="会议任务导出.csv"
+        )
+
+        if not file_path:
+            return # 用户取消了选择
+
+        try:
+            with open(file_path, mode='w', encoding='utf-8-sig', newline='') as file:
+                fieldnames = ['任务名称', '时长(分钟)']
+                writer = csv.DictWriter(file, fieldnames=fieldnames)
+
+                writer.writeheader() # 写入表头
+                for task in tasks:
+                    writer.writerow({'任务名称': task.name, '时长(分钟)': task.minutes})
+
+            messagebox.showinfo("成功", f"任务已成功导出到:\n{file_path}", parent=self.root)
+
+        except Exception as e:
+            messagebox.showerror("导出失败", f"发生未知错误: {e}", parent=self.root)
 
 if __name__ == "__main__":
     root = tk.Tk()
