@@ -6,7 +6,7 @@ from task import Task
 #新增2.CSV功能
 from tkinter import filedialog
 import csv
-
+from countdown_timer import CountdownTimer
 
 class MainApp:
     def __init__(self, root_window: tk.Tk):  # 重命名参数避免隐藏
@@ -30,6 +30,33 @@ class MainApp:
 # 新增2.CSV导入/导出按钮
         ttk.Button(btn_frame, text="📥 导入CSV", command=self._import_csv).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="📤 导出CSV", command=self._export_csv).pack(side="left", padx=5)
+              # 新增：计时功能按钮（暂停/恢复/加时）
+        # 模拟VoiceService类（避免导入报错）
+        class VoiceService:
+            pass
+        
+        # 初始化计时器实例
+        self.timer = CountdownTimer(self.task_list, VoiceService())
+        
+        # 开始计时按钮（绑定到self.btn_frame，和原按钮同框架）
+        start_btn = ttk.Button(self.btn_frame, text="开始计时", command=lambda: self.timer.start_meeting(
+            on_timer_update=lambda name, mins, secs, *args: print(f"【{name}】剩余：{mins}分{secs}秒"),
+            on_task_complete=lambda name: print(f"✅ 任务「{name}」完成"),
+            on_meeting_end=lambda time: print(f"🔚 会议结束，总耗时{time}秒")
+        ))
+        start_btn.pack(side="left", padx=5)
+        
+        # 暂停计时按钮
+        pause_btn = ttk.Button(self.btn_frame, text="暂停计时", command=self.timer.pause_timer)
+        pause_btn.pack(side="left", padx=5)
+        
+        # 恢复计时按钮
+        resume_btn = ttk.Button(self.btn_frame, text="恢复计时", command=self.timer.resume_timer)
+        resume_btn.pack(side="left", padx=5)
+        
+        # 加时5分钟按钮
+        add_time_btn = ttk.Button(self.btn_frame, text="加时5分钟", command=lambda: self.timer.add_time_to_current_task(5))
+        add_time_btn.pack(side="left", padx=5)      
         # 统计信息显示
         self.stats_frame = ttk.LabelFrame(root_window, text="会议统计", padding=10)
         self.stats_frame.pack(fill="x", padx=20, pady=5)
