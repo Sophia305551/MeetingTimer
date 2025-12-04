@@ -95,11 +95,15 @@ class CountdownTimer:
 
     def pause_timer(self):
         """暂停计时器"""
-        self.is_paused = True
+        if self.is_running: # 只有会议运行中才能暂停
+            self.is_paused = True
+        return self.is_paused
 
     def resume_timer(self):
         """恢复计时器"""
-        self.is_paused = False
+        if self.is_running and self.is_paused: #  运行中且暂停时才能恢复
+            self.is_paused = False
+        return not self.is_paused #返回恢复后的状态
 
     def stop_timer(self):
         """停止计时器"""
@@ -107,9 +111,10 @@ class CountdownTimer:
         self.is_paused = False
 
     def add_time_to_current_task(self, minutes: int):
-        """为当前任务增加时间"""
-        if self.is_running and not self.is_paused:
+        """为当前任务增加时间（分钟），暂停/运行状态均可修改"""
+        if self.is_running:  # 只要会议没结束就能加时
             self.remaining_time += minutes * 60
+            self.remaining_time = max(0, self.remaining_time)  # 防止时间为负
             return True
         return False
 
